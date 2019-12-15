@@ -1,4 +1,6 @@
-﻿namespace Entities.Fields
+﻿using System.Collections.Generic;
+
+namespace Entities.Fields
 {
     public enum ValidationType
     {
@@ -9,6 +11,7 @@
     {
         public int Id { get; set; }
         public ValidationType Type { get; set; }
+        public List<Field> ValidatedFields { get; set; }
     }
     public class RegexValidator : Validator
     {
