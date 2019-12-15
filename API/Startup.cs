@@ -34,8 +34,9 @@ namespace API
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddControllers();
             services.AddCors();
-            services.AddScoped<IAuthRepo, AuthRepo>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAccountRepo, AccountRepo>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

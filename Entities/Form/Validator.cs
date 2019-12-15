@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Entities.Form;
 
 namespace Entities.Fields
 {
@@ -11,7 +12,7 @@ namespace Entities.Fields
     {
         public int Id { get; set; }
         public ValidationType Type { get; set; }
-        public List<Field> ValidatedFields { get; set; }
+        public List<ValidatorField> ValidatedFields { get; set; }
     }
     public class RegexValidator : Validator
     {

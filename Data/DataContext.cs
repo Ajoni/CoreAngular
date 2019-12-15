@@ -1,6 +1,7 @@
 ﻿using System;
 using Entities;
 using Entities.Fields;
+using Entities.Form;
 using Entities.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,5 +17,20 @@ namespace Data
         public DbSet<FieldValue> FieldValues { get; set; }
         public DbSet<Validator> Validators { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ValidatorField>().HasKey(vf => new {vf.FieldId, vf.ValidatorId});
+
+            //modelBuilder.Entity<ValidatorField>()
+            //.HasOne(vf => vf.Field)
+            //    .WithMany(f => f.Validators)
+            //    .HasForeignKey(vf => vf.FieldId);
+
+            //modelBuilder.Entity<ValidatorField>()
+            //.HasOne(vf => vf.Validator)
+            //    .WithMany(v => v.ValidatedFields)
+            //    .HasForeignKey(vf => vf.ValidatorId);
+        }
     }
+
 }

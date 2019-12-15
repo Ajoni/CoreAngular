@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Entities.Form;
 
 namespace Entities.Fields
 {
@@ -11,7 +12,7 @@ namespace Entities.Fields
     {
         public int Id { get; set; }
         public FieldType FieldType{ get; set; }
-        public List<Validator> Validators { get; set; }
+        public List<ValidatorField> Validators { get; set; }
         public string Name { get; set; }
     }
 }

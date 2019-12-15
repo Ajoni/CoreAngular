@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Services.User.Interfaces
 {
-    public interface IAuthService
+    public interface IAccountService
     {
         byte[] CreateHash(in string password, in byte[] salt);
         byte[] CreateSalt();

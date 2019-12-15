@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Services.User.Interfaces;
 using System.Security.Cryptography;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace Services.User.Impl
 {
-    public class AuthService : IAuthService
+    public class AccountService : IAccountService
     {
         public byte[] CreateHash(in string password, in byte[] salt)
         {
@@ -34,7 +35,7 @@ namespace Services.User.Impl
         public bool Auth(Entities.User.User user, string password)
         {
             var sentHash = CreateHash(password, user.Salt);
-            return sentHash == user.PasswordHash;
+            return sentHash.SequenceEqual(user.PasswordHash);
         }
     }
 }
