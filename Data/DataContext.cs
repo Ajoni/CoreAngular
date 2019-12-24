@@ -3,14 +3,14 @@ using Entities;
 using Entities.Fields;
 using Entities.Form;
 using Entities.User;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-        public DbSet<User> Users { get; set; }
         public DbSet<FormData> FormDatas { get; set; }
         public DbSet<DataTemplate> DataTemplates { get; set; }
         public DbSet<Field> Fields { get; set; }
@@ -19,6 +19,8 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<ValidatorField>().HasKey(vf => new {vf.FieldId, vf.ValidatorId});
 
             //modelBuilder.Entity<ValidatorField>()

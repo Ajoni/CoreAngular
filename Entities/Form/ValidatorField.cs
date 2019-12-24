@@ -13,11 +13,11 @@ namespace Entities.Form
         [Key]
         [Column(Order = 1)]
         [ForeignKey("Field")]
-        public int FieldId { get; set; }
+        public string FieldId { get; set; }
         [Key]
         [Column(Order = 2)]
         [ForeignKey("Validator")]
-        public int ValidatorId { get; set; }
+        public string ValidatorId { get; set; }
         public Field Field { get; set; }
         public Validator Validator { get; set; }
     }

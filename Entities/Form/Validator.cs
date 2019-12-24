@@ -10,7 +10,7 @@ namespace Entities.Fields
 
     public class Validator
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public ValidationType Type { get; set; }
         public List<ValidatorField> ValidatedFields { get; set; }
     }

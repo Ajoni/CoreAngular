@@ -8,6 +8,7 @@ using Data.Repos.Interfaces;
 using Entities;
 using Entities.User;
 using Entities.User.VM;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -17,43 +18,44 @@ namespace Data.Repos.Impl
 {
     public class AccountRepo : IAccountRepo
     {
-        private readonly DataContext _dataContext;
-        private readonly IAccountService _accountService;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly bool _lockoutOnFailure;
 
-        public AccountRepo(DataContext dataContext, IAccountService accountService, ITokenService tokenService)
+        public AccountRepo(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+            ITokenService tokenService)
         {
-            _dataContext = dataContext;
-            _accountService = accountService;
+            _userManager = userManager;
+            _signInManager = signInManager;
             _tokenService = tokenService;
+            _lockoutOnFailure =
+#if DEBUG
+                !
+#endif
+                    true;
         }
 
-        public async Task<User> Register(User user, string password)
+        public async Task<IdentityResult> Register(IdentityUser user, string password)
         {
-            var salt = _accountService.CreateSalt();
-            var hash = _accountService.CreateHash(password, salt);
-
-            user.Salt = salt;
-            user.PasswordHash = hash;
-
-            await _dataContext.Users.AddAsync(user);
-            await _dataContext.SaveChangesAsync();
-
-            return user;
+            return await _userManager.CreateAsync(user, password);
         }
 
         public async Task<ObjectResult> Login(LoginVM vm)
         {
-            var user = await GetUser(vm.Login);
+            var user = await _userManager.FindByNameAsync(vm.Login) ?? await _userManager.FindByEmailAsync(vm.Login);
 
-            var isHashCorrect = _accountService.Auth(user, vm.Password);
-            if (!isHashCorrect)
+            if (user == null)
+                throw new ArgumentException("User with given login not found");
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, vm.Password, _lockoutOnFailure);
+            if (!result.Succeeded)
                 throw new ArgumentException($"Given password does not match");
 
             var userClaims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
             };
 
             var token = _tokenService.GenerateAccessToken(userClaims);
@@ -65,24 +67,5 @@ namespace Data.Repos.Impl
             });
         }
 
-        public async Task<bool> UsernameExists(string username) => await _dataContext.Users.AnyAsync(x => x.Username == username);
-
-        public async Task<bool> EmailExists(string email) => await _dataContext.Users.AnyAsync(x => x.Email == email);
-        public async Task<User> GetUser(string login)
-        {
-            var user = await _dataContext.Users.SingleOrDefaultAsync(x => x.Username == login);
-            if (user == null)
-                user = await _dataContext.Users.SingleOrDefaultAsync(x => x.Email == login);
-            if (user == null)
-                throw new ArgumentException($"User with login '{login}' does not exist");
-
-            return user;
-        }
-
-        public async Task<User> GetUser(int id)
-        {
-            var user = await _dataContext.Users.SingleOrDefaultAsync(x => x.Id == id);
-            return user;
-        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace Entities.User.VM
 {
@@ -15,5 +16,17 @@ namespace Entities.User.VM
         [Required]
         [StringLength(32, MinimumLength = 1, ErrorMessage = "Length must be in between 1 and 32")]
         public string Password { get; set; }
+
+        public IdentityUser GetUser()
+        {
+            var user = new IdentityUser
+            {
+                UserName = Username,
+                Email = Email,
+            };
+
+            return user;
+
+        }
     }
 }

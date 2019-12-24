@@ -1,20 +1,13 @@
 ﻿using Entities.User.VM;
+using Microsoft.AspNetCore.Identity;
 
 namespace Entities.User
 {
     public class User
     {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Email{ get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] Salt { get; set; }
+        public string Id { get; set; }
+        public virtual IdentityUser Identity { get; set; }
 
         public User(){}
-        public User(RegisterVM registerVm)
-        {
-            Username = registerVm.Username;
-            Email = registerVm.Email;
-        }
     }
 }
