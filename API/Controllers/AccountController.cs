@@ -5,6 +5,7 @@ using Data.Repos.Interfaces;
 using Entities;
 using Entities.User;
 using Entities.User.VM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +22,13 @@ namespace API.Controllers
             _accountRepo = accountRepo;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterVM registerVm)
         {
-            var user = new User(registerVm);
-            if (!await _accountRepo.UsernameExists(user.Username) || !await _accountRepo.EmailExists(user.Email))
-                return BadRequest();
-
             try
             {
-                await _accountRepo.Register(user, registerVm.Password);
+                await _accountRepo.Register(registerVm.GetUser(), registerVm.Password);
             }
             catch (ArgumentException)
             {
@@ -44,6 +42,7 @@ namespace API.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginVM vm)
         {

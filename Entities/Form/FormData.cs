@@ -6,6 +6,6 @@ namespace Entities.Fields
     {
         public string Id { get; set; }
         public List<FieldValue> Values { get; set; }
-        public DataTemplate DataTemplate { get; set; }
+        public FormTemplate FormTemplate { get; set; }
     }
 }

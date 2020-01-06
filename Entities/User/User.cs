@@ -6,6 +6,7 @@ namespace Entities.User
     public class User
     {
         public string Id { get; set; }
+        public string IdentityId { get; set; }
         public virtual IdentityUser Identity { get; set; }
 
         public User(){}

@@ -2,10 +2,10 @@
 
 namespace Entities.Fields
 {
-    public class DataTemplate
+    public class FormTemplate
     {
         public string Id { get; set; }
         public List<Field> Fields { get; set; }
-        public DataTemplate BasedOn { get; set; }
+        public FormTemplate BasedOn { get; set; }
     }
 }
